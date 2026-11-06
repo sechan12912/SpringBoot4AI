@@ -11,6 +11,16 @@ spring:
   h2:
     console:
       enabled: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
 jwt:
   issuer: ajufresh@gmail.com
   secret_key: study-springboot
