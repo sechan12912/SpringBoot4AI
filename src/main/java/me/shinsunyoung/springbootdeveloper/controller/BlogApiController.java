@@ -2,10 +2,10 @@ package me.shinsunyoung.springbootdeveloper.controller;
 
 import lombok.RequiredArgsConstructor;
 import me.shinsunyoung.springbootdeveloper.domain.Article;
-import me.shinsunyoung.springbootdeveloper.dto.AddArticleRequest;
-import me.shinsunyoung.springbootdeveloper.dto.ArticleResponse;
-import me.shinsunyoung.springbootdeveloper.dto.UpdateArticleRequest;
+import me.shinsunyoung.springbootdeveloper.dto.*;
 import me.shinsunyoung.springbootdeveloper.service.BlogService;
+import me.shinsunyoung.springbootdeveloper.service.ThumbnailGeneratorService;
+import me.shinsunyoung.springbootdeveloper.service.WritingAssistantService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class BlogApiController {
+
     private final BlogService blogService;
+    private final WritingAssistantService writingAssistantService;
+    private final ThumbnailGeneratorService thumbnailGeneratorService;
+
     @PostMapping("/api/articles")
     public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request) {
         Article savedArticle = blogService.save(request);
@@ -53,5 +57,21 @@ public class BlogApiController {
         Article updatedArticle = blogService.update(id, request);
         return ResponseEntity.ok()
                 .body(updatedArticle);
+    }
+
+    @PostMapping("/api/ai-suggestions")
+    public ResponseEntity<WritingSuggestionsResponse> writingAssist(@RequestBody WritingSuggestionRequest request) {
+        WritingSuggestionsResponse response = writingAssistantService.getWritingAssist(request);
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
+    @PostMapping("/api/ai-thumbnails")
+    public ResponseEntity<GeneratorThumbnailResponse> thumbnailGenerator(@RequestBody GeneratorThumbnailRequest request) {
+        GeneratorThumbnailResponse response = thumbnailGeneratorService.generateThumbnail(request);
+
+        return ResponseEntity.ok()
+                .body(response);
     }
 }
